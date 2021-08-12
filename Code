@@ -1,0 +1,34 @@
+#include <Wire.h>
+#include <MechaQMC5883.h>
+#include <Servo.h>
+
+MechaQMC5883 qmc;
+Servo myServo;
+int setpath = 100; //Defines Direction
+int temp = 0;
+int temp2 = 0;
+
+void setup() 
+{
+  myServo.attach(8);
+  Wire.begin();
+  qmc.init();
+  Serial.begin(9600); 
+}
+
+void loop() 
+{
+  int x, y, z, azimuth;
+  qmc.read(&x, &y, &z,&azimuth);
+  Serial.print("raw input: ");
+  Serial.print(azimuth);
+  delay(100);
+
+  temp = azimuth - setpath;
+  temp2 = 90 + temp ;
+  
+  myServo.write(temp2);
+  Serial.print("    servo: ");
+  Serial.print(temp2);
+  Serial.println();
+}
